@@ -1,0 +1,16 @@
+services:
+  redis:
+    image: redis:7
+    ports: ['6379:6379']
+  bot:
+    build: ./file-converter-bot/docker
+    env_file: .env
+    volumes: ['./file-converter-bot:/app','./data:/data']
+    command: ['python','-m','src.bot.main']
+    depends_on: [redis]
+  worker:
+    build: ./file-converter-bot/docker
+    env_file: .env
+    volumes: ['../file-converter-bot:/app','./data:/data']
+    command: ['python','-m','src.workers.worker']
+    depends_on: [redis]
